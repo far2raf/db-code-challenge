@@ -8,7 +8,8 @@ const Login = () => {
     const onsubmit = (evt) => {
         evt.preventDefault();
         if (username !== 'admin' || password !== 'admin') {
-            alert('Invalid username or password!')
+            alert('Invalid username or password!');
+            return;
         }
 
         localStorage.setItem('token', '12345');
