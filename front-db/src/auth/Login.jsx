@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { browserHistory } from 'react-router';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -11,6 +12,8 @@ const Login = () => {
         }
 
         localStorage.setItem('token', '12345');
+
+        window.location.href = '/dashboard';
     }
 
     return(
