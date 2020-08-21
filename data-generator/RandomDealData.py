@@ -5,6 +5,7 @@ import json
 from Instrument import Instrument
 
 
+
 instruments = ("Astronomica", "Borealis", "Celestial", "Deuteronic", "Eclipse",
 			"Floral", "Galactia", "Heliosphere", "Interstella", "Jupiter", "Koronis", "Lunatic")
 counterparties = ("Lewis", "Selvyn", "Richard", "Lina", "John", "Nidia")

@@ -1,37 +1,35 @@
-import mysql.connector
-from RandomDealData import RandomDealData
-import json
-from Instrument import Instrument
+from flask import Flask, Response
+from flask_cors import CORS
+import webServiceStream
+from RandomDealData import *
 
-db = mysql.connector.connect(host='localhost', database='db_grad_cs_1917', user='arina', password='1234')
-cursor = db.cursor()
-newUser = """INSERT INTO users  (user_id, user_pwd)
-            VALUES ("Kaa" , "1234")"""
-newReq = """ SELECT * FROM users  """
-cursor.execute(newUser)
-db.commit()
-
-cursor.execute(newReq)
-records = cursor.fetchall()
-cursor.close()
+app = Flask(__name__)
+CORS(app)
 
 
-def loadDealDatainDB():
-    datObj = RandomDealData()
-    instList = datObj.createInstrumentList()
-    dealData = json.loads(datObj.createRandomData(instList))
-    print(dealData)
-    instrumentName = dealData["instrumentName"]
-    cpty = dealData["cpty"]
-    price = dealData["price"]
-    types = dealData["type"]
-    quantity = dealData["quantity"]
-    time = dealData["time"]
+@app.route('/')
+def index():
+    return webServiceStream.index()
 
-def downloadDealDB(datBegin, datEnd):
-    print("ok")
+@app.route('/testservice')
+def testservice():
+    return webServiceStream.testservice()
 
-if (db.is_connected()):
-    db.close()
-    print("ok")
+@app.route('/streamTest')
+def stream():
+    return webServiceStream.stream()
 
+@app.route('/streamTest/sse')
+def sse_stream():
+     return webServiceStream.sse_stream()
+
+
+def bootapp():
+    #global rdd
+    #rdd = RandomDealData()
+    #webServiceStream.bootServices()
+    app.run(debug=True, port=8080, threaded=True, host=('0.0.0.0'))
+
+
+if __name__ == "__main__":
+      bootapp()
