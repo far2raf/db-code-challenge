@@ -3,18 +3,44 @@ from RandomDealData import RandomDealData
 import json
 from Instrument import Instrument
 
-db = mysql.connector.connect(host='localhost', database='db_grad_cs_1917', user='arina', password='1234')
-cursor = db.cursor()
-newUser = """INSERT INTO users  (user_id, user_pwd)
-            VALUES ("Kaa" , "1234")"""
-newReq = """ SELECT * FROM users  """
-cursor.execute(newUser)
-db.commit()
+HOST = 'localhost'
+DB = 'db_grad_cs_1917'
+USER = 'user'
+PSW = 'password'
 
-cursor.execute(newReq)
-records = cursor.fetchall()
-cursor.close()
 
+def add_new_user(user_name, password):
+    cursor = None
+    try:
+        connection = mysql.connector.connect(host=HOST, database=DB, user=USER, password=PSW)
+        cursor = connection.cursor()
+        new_user = "INSERT INTO users  (user_id, user_pwd) VALUES (%s , %s)"
+        values = (user_name, password)
+        cursor.execute(new_user, values)
+        connection.commit()
+        cursor.close()
+    except mysql.connector.Error as error:
+        print("Failed to insert record into users table".format(error))
+        cursor.close()
+        return False
+    return True
+
+
+def check_password(user_name, password_from_user):
+    cursor = None
+    try:
+        connection = mysql.connector.connect(host=HOST, database=DB, user=USER, password=PSW)
+        cursor = connection.cursor()
+        get_pwd = "SELECT user_pwd FROM users where user_id = %s"
+        values = (user_name)
+        cursor.execute(get_pwd, values)
+        pwd = cursor.fetchall()
+        cursor.close()
+    except mysql.connector.Error as error:
+        print("Failed to insert record into users table".format(error))
+        cursor.close()
+        return False
+    return pwd == password_from_user
 
 def loadDealDatainDB():
     datObj = RandomDealData()
@@ -29,8 +55,4 @@ def loadDealDatainDB():
     time = dealData["time"]
 
 def downloadDealDB(datBegin, datEnd):
-    print("ok")
-
-if (db.is_connected()):
-    db.close()
     print("ok")
