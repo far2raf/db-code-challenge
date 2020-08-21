@@ -8,9 +8,9 @@ const Login = () => {
         <form>
             <h3>Sign in</h3>
             <div className='form-group'>
-                <label>Email address</label>
-                <input type='email' className='form-control' 
-                    placeholder='Enter your email'></input>
+                <label>Login</label>
+                <input type='text' className='form-control' 
+                    placeholder='Enter your login'></input>
             </div>
             <div className='form-group'>
                 <label>Password</label>
