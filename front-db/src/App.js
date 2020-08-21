@@ -3,7 +3,9 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-import SignUp from "./SignUp";
+import SignUp from './auth/SignUp';
+import Login from './auth/Login';
+
 
 function App() {
   return (<Router>
@@ -26,7 +28,8 @@ function App() {
       <div className="auth-wrapper">
         <div className="auth-inner">
           <Switch>
-            <Route exact path='/' component={SignUp} />
+            <Route exact path='/' component={Login} />
+            <Route path="/sign-in" component={Login} />
             <Route path="/sign-up" component={SignUp} />
           </Switch>
         </div>
