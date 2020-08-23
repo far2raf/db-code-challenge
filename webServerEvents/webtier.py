@@ -6,7 +6,7 @@ import time
 from flask_login import LoginManager, UserMixin, current_user, login_required, logout_user, login_user
 
 login_manager = LoginManager()
-
+WEB_HOST_DATA_GENERATOR = "http://localhost:8080"
 app = Flask(__name__)
 
 
@@ -88,17 +88,24 @@ def load_user(user_id):
         return None
 
 
-# TODO. change it to request to data generator
 def verify_existence_of_user(username, password):
-    global mock_username, mock_password
-    return mock_username == username and mock_password == password
+    resp = requests.post(f"{WEB_HOST_DATA_GENERATOR}/verify-existence-of-user",
+                         data={"username": username, "password": password})
+    if resp.status_code == 200:
+        return {"status_server_response": 200, "user_exist": resp.json()['exist']}
+    else:
+        return {"status_server_response": resp.status_code, "response": resp}
 
 
 @app.route('/log-in', methods=['POST'])
 def log_in():
     username = request.form['username']
     password = request.form['password']
-    exist = verify_existence_of_user(username, password)
+    result_of_verifying = verify_existence_of_user(username, password)
+    if result_of_verifying['status_server_response'] != 200:
+        # TODO. send some information about a response of data-generate server for debug
+        return make_response(({"success": False}, 500))
+    exist = result_of_verifying['user_exist']
     if exist:
         return make_response(({"success": True}, 200))
     else:

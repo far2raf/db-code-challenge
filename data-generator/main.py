@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, request, make_response
 from flask_cors import CORS
 import webServiceStream
 from RandomDealData import *
@@ -31,6 +31,23 @@ def stream():
 @app.route('/streamTest/sse')
 def sse_stream():
     return webServiceStream.sse_stream()
+
+
+# TODO. task for Ekaterina.
+def verify_existence_of_user_in_db(username, password):
+    return True
+    pass
+
+
+@app.route('/verify-existence-of-user', methods=['POST'])
+def verify_existence_of_user():
+    username = request.form['username']
+    password = request.form['password']
+    exist = verify_existence_of_user_in_db(username, password)
+    if exist:
+        return make_response(({"success": True, "exist": True}, 200))
+    else:
+        return make_response(({"success": True, "exist": False}, 200))
 
 
 def bootapp():
