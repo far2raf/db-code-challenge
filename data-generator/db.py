@@ -36,6 +36,57 @@ def add_new_user(user_name, password):
         return False
     return True
 
+pass_key = "0ArBlCVPGT5XaXZMNwks3d_S0Or2dpm9o69y1nz0mdk="
+cliper = Fernet(pass_key)
+
+def add_new_data_in_db(instrument_name, cpty, price, types, quantity, time):
+    cursor = None
+    try:
+        connection = mysql.connector.connect(host=HOST, database=DB, user=USER, password=PSW)
+        cursor = connection.cursor()
+
+        sql = """SELECT counterparty_id from counterparty where counterparty_name = '%(cpty)s' """ % {"cpty": cpty}
+        cursor.execute(sql)
+        counterparty_id = cursor.fetchone()
+        if counterparty_id[0] is None:
+            sql = """SELECT max(counterparty_id) FROM counterparty """
+            cursor.execute(sql)
+            counterparty_id = cursor.fetchone()
+            if counterparty_id[0] is None:
+                id_cpty = 1
+            else:
+                id_cpty = counterparty_id[0]+1
+            sql = """Insert into counterparty(counterparty_id, counterparty_name) values ('%(id)d','%(cpty)s') """ % {"id": id_cpty, "cpty": cpty}
+            cursor.execute(sql)
+            connection.commit()
+
+
+
+        sql = """SELECT instrument_id from instrument where instrument_name = '%(in_name)s' """ % {"in_name": instrument_name }
+        cursor.execute(sql)
+        instrument_id = cursor.fetchone()
+        if instrument_id[0] is None:
+            sql = """SELECT max(instrument_id) FROM instrument """
+            cursor.execute(sql)
+            instrument_id = cursor.fetchone()
+            if instrument_id[0] is None:
+                id_inst = 1
+            else:
+                id_inst = instrument_id[0] + 1
+            sql = """Insert into instrument(instrument_id, instrument_name) values ('%(id)d','%(in_name)s') """ % {"id": id_inst, "in_name": instrument_name}
+            cursor.execute(sql)
+            connection.commit()
+
+
+
+
+
+        cursor.close()
+    except mysql.connector.Error as error:
+        print("Failed to insert record into users table".format(error))
+        cursor.close()
+        return False
+    return True
 
 def check_password(user_name, password_from_user):
     cursor = None
