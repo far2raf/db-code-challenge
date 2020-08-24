@@ -32,7 +32,7 @@ Read about it in next section
 
 ## Create needed tables in sql
 the same information you can find on 
-https://deliveringtechnology2018.atlassian.net/wiki/spaces/CS2020 S/pages/1314128079/MySQL+ABCs
+https://deliveringtechnology2018.atlassian.net/wiki/spaces/CS2020S/pages/1314128079/MySQL+ABCs
 you need to do connection in "MYSQL Workbench" with parameters like:
 hostname = 127.0.0.1
 port = 3306
