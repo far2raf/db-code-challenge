@@ -37,7 +37,7 @@ def check_password(user_name, password_from_user):
         pwd = cursor.fetchall()
         cursor.close()
     except mysql.connector.Error as error:
-        print("Failed to insert record into users table".format(error))
+        print("Error during connection to db".format(error))
         cursor.close()
         return False
     return pwd == password_from_user
