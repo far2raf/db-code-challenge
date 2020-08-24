@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import { browserHistory } from 'react-router';
 
 const Login = () => {
     const [username, setUsername] = useState('');

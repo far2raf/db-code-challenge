@@ -11,18 +11,6 @@ DB = 'db_grad_cs_1917'
 USER = 'user'
 PSW = 'password'
 
-pass_key = "0ArBlCVPGT5XaXZMNwks3d_S0Or2dpm9o69y1nz0mdk="
-cliper = Fernet(pass_key)
-
-def encript_pass(user_password):
-    encripted_psd = cliper.encrypt(user_password)
-    return encripted_psd
-
-def decripted_pass(encripted_password):
-    decripted_psd = cliper.decrypt(encripted_password)
-    return decripted_psd
-
-
 app = Flask(__name__)
 CORS(app)
 
