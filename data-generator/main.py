@@ -3,11 +3,25 @@ from flask_cors import CORS
 import webServiceStream
 from RandomDealData import *
 import mysql.connector
+from cryptography.fernet import Fernet
+
 
 HOST = 'localhost'
 DB = 'db_grad_cs_1917'
 USER = 'user'
 PSW = 'password'
+
+pass_key = "0ArBlCVPGT5XaXZMNwks3d_S0Or2dpm9o69y1nz0mdk="
+cliper = Fernet(pass_key)
+
+def encript_pass(user_password):
+    encripted_psd = cliper.encrypt(user_password)
+    return encripted_psd
+
+def decripted_pass(encripted_password):
+    decripted_psd = cliper.decrypt(encripted_password)
+    return decripted_psd
+
 
 app = Flask(__name__)
 CORS(app)
@@ -49,7 +63,8 @@ def verify_existance_of_user_in_db(user_name, password_from_user):
         cursor.execute(get_pwd)
         pwd = cursor.fetchone()
         cursor.close()
-        if pwd == password_from_user:
+        encripted_password_from_user = cliper.encrypt(password_from_user)
+        if pwd == encripted_password_from_user:
             return {"user_exist": True, "user_id": user_name}
         else:
             return {"user_exist": False}
