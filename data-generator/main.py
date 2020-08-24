@@ -49,7 +49,7 @@ def verify_existance_of_user_in_db(user_name, password_from_user):
         cursor.execute(get_pwd)
         pwd = cursor.fetchone()
         cursor.close()
-        if pwd == password_from_user:
+        if pwd[0] == password_from_user:
             return {"user_exist": True, "user_id": user_name}
         else:
             return {"user_exist": False}
