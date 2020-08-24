@@ -4,6 +4,7 @@ import webServiceStream
 from RandomDealData import *
 import mysql.connector
 from cryptography.fernet import Fernet
+import test
 
 
 HOST = 'localhost'
@@ -15,11 +16,11 @@ pass_key = "0ArBlCVPGT5XaXZMNwks3d_S0Or2dpm9o69y1nz0mdk="
 cliper = Fernet(pass_key)
 
 def encript_pass(user_password):
-    encripted_psd = cliper.encrypt(user_password)
+    encripted_psd = cliper.encrypt(user_password.encode('utf-8'))
     return encripted_psd
 
 def decripted_pass(encripted_password):
-    decripted_psd = cliper.decrypt(encripted_password)
+    decripted_psd = cliper.decrypt(encripted_password.encode('utf-8'))
     return decripted_psd
 
 
@@ -115,6 +116,8 @@ def verify_user_id_in_db(user_name):
         print("Error during connection to db".format(error))
         cursor.close()
         return False
+
+
 
 
 if __name__ == "__main__":
