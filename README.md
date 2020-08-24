@@ -44,7 +44,7 @@ docker ps -a
 ```
 
 ```bash
-docker run  -p 3306:3306 --name mysql-server -e MYSQL_ROOT_PASSWORD=ppp -d mysql:latest
+docker run  -p 3306:3306 --name mysql-server -e MYSQL_ROOT_PASSWORD=password -d mysql:latest
 ```
 
 docker run - create new docker container. If you want create mysql again, you should do this.
@@ -58,9 +58,10 @@ docker run ... line above ...
 ## Create needed tables in sql
 the same information you can find on 
 https://deliveringtechnology2018.atlassian.net/wiki/spaces/CS2020S/pages/1314128079/MySQL+ABCs
+BUT YOU SHOULD CHANGE PASSWORD from ppp to password
 
 open mysqlworkbench
-connect to server with host = 127.0.0.1 , user=root, password=ppp
+connect to server with host = 127.0.0.1 , user=root, password=password
 open script ./Database/scriptsWithData
 run it press lightning
 
