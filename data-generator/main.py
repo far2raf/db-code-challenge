@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, request, make_response
 from flask_cors import CORS
 import webServiceStream
 from RandomDealData import *
@@ -8,7 +8,7 @@ from cryptography.fernet import Fernet
 
 HOST = 'localhost'
 DB = 'db_grad_cs_1917'
-USER = 'user'
+USER = 'root'
 PSW = 'password'
 
 pass_key = "0ArBlCVPGT5XaXZMNwks3d_S0Or2dpm9o69y1nz0mdk="
@@ -47,6 +47,27 @@ def sse_stream():
     return webServiceStream.sse_stream()
 
 
+@app.route('/verify-existence-of-user', methods=['POST'])
+def verify_existence_of_user():
+    username = request.form['username']
+    password = request.form['password']
+    result_of_verifying = verify_existence_of_user_in_db(username, password)
+    user_exist = result_of_verifying['user_exist']
+    if user_exist:
+        user_id = result_of_verifying['user_id']
+        return make_response(({"success": True,
+                               "user_exist": True,
+                               "user_id": user_id}, 200))
+    else:
+        return make_response(({"success": True, "user_exist": False}, 200))
+
+
+@app.route('/verify-user-id', methods=['POST'])
+def verify_user_id():
+    user_exist = verify_user_id_in_db(request.user_id)
+    return make_response(({"success": True, "user_exist": user_exist}, 200))
+
+
 def bootapp():
     # global rdd
     # rdd = RandomDealData()
@@ -54,7 +75,7 @@ def bootapp():
     app.run(debug=True, port=8080, threaded=True, host=('0.0.0.0'))
 
 
-def verify_existance_of_user_in_db(user_name, password_from_user):
+def verify_existence_of_user_in_db(user_name, password_from_user):
     cursor = None
     try:
         connection = mysql.connector.connect(host=HOST, database=DB, user=USER, password=PSW)
@@ -63,10 +84,11 @@ def verify_existance_of_user_in_db(user_name, password_from_user):
         cursor.execute(get_pwd)
         pwd = cursor.fetchone()
         cursor.close()
-        encripted_password_from_user = cliper.encrypt(password_from_user)
+        # encripted_password_from_user = cliper.encrypt(password_from_user)
         if pwd is None:
             return {"user_exist": False}
-        if pwd[0] == encripted_password_from_user:
+        # if pwd[0] == encripted_password_from_user:
+        if pwd[0] == password_from_user:
             return {"user_exist": True, "user_id": user_name}
         else:
             return {"user_exist": False}
