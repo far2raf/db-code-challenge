@@ -1,5 +1,4 @@
 from flask import Flask, render_template, Response, request, jsonify, make_response
-from flask_sqlalchemy import SQLAlchemy
 from flask_sse import sse
 from flask_cors import CORS
 import requests
