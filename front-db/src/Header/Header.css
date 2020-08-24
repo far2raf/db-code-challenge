@@ -28,3 +28,28 @@
     cursor: pointer;
     transform: scale(1.03);
 }
+
+.connect {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.success:after {
+    content: '';
+    border: 5px solid rgb(0, 219, 0);
+
+    position: absolute;
+    border-radius: 50%;
+    left: 103%;
+}
+
+.fail:after {
+    content: '';
+    border: 5px solid red;
+
+    position: absolute;
+    border-radius: 50%;
+    left: 103%;
+}
