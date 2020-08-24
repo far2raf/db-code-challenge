@@ -7,16 +7,44 @@ const SignUp = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [repeatpassword, setRepeatPassword] = useState('');
+    const [required, setRequired] = useState(false);
+    const [mismatch, setMismatch] = useState(false);
+
+    const getRequired = () => {
+        if (required) {
+            return (
+                <div className="invalid">
+                    All fields must be required!!
+                </div>
+            )
+        }
+
+        return <></>;
+    }
+
+    const getMismatch = () => {
+        if (mismatch) {
+            return (
+                <div className="invalid">
+                    Passwords are not match!
+                </div>
+            )
+        }
+
+        return <></>;
+    }
 
     const onsubmit = evt => {
         evt.preventDefault();
+        setRequired(false);
+        setMismatch(false);
         if (username === '' || password === '' || repeatpassword === '') {
-            alert('All fields must be required!!!')
+            setRequired(true);
             return;
         }
 
         if (password !== repeatpassword) {
-            alert('Passwords dont match!!!');
+            setMismatch(true);
             return;
         }
 
@@ -27,6 +55,8 @@ const SignUp = () => {
     return (
         <form>
             <h3>Sign Up</h3>
+            { getRequired() }
+            { getMismatch() }
 
             <div className="form-group">
                 <label>Login</label>

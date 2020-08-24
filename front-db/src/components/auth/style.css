@@ -1,0 +1,11 @@
+.invalid {
+    display: flex;
+    width: 100%;
+
+    justify-content: center;
+    color: red;
+}
+
+.hidden {
+    opacity: 0;
+}
