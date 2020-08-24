@@ -9,7 +9,7 @@ DB = 'db_grad_cs_1917'
 USER = 'user'
 PSW = 'password'
 
-pass_key = Fernet.generate_key()
+pass_key = "0ArBlCVPGT5XaXZMNwks3d_S0Or2dpm9o69y1nz0mdk="
 cliper = Fernet(pass_key)
 
 def encript_pass(user_password):
