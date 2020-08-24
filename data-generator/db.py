@@ -55,8 +55,8 @@ def add_new_data_in_db(instrument_name, cpty, price, types, quantity, time):
             if counterparty_id[0] is None:
                 id_cpty = 1
             else:
-                id_cpty = counterparty_id[0]+1
-            sql = """Insert into counterparty(counterparty_id, counterparty_name) values ('%(id)d','%(cpty)s') """ % {"id": id_cpty, "cpty": cpty}
+                id_cpty = counterparty_id[0] + 1
+            sql = """Insert into counterparty(counterparty_id, counterparty_name, counterparty_status, counterparty_date_registrated ) values ('%(id)d','%(cpty)s', 'A', sysdate) """ % {"id": id_cpty, "cpty": cpty}
             cursor.execute(sql)
             connection.commit()
 
@@ -117,4 +117,20 @@ def loadDealDatainDB():
     time = dealData["time"]
 
 def downloadDealDB(datBegin, datEnd):
-    print("ok")
+    cursor = None
+    try:
+        connection = mysql.connector.connect(host=HOST, database=DB, user=USER, password=PSW)
+        cursor = connection.cursor()
+        get_pwd = """Select instrument_name, deal_type, avg(deal_amount) from deal d
+		                    inner join counterparty c on d.deal_counterparty_id = c.counterparty_id
+                            inner join instrument i on i.instrument_id = d.deal_instrument_id
+                     where strDate <= deal_time and endDate >= dealDate
+                     group by instrument_name, deal_type;"""
+        cursor.execute(get_pwd)
+        data = cursor.fetchall()
+        cursor.close()
+    except mysql.connector.Error as error:
+        print("Error during connection to db".format(error))
+        cursor.close()
+        return
+    return
