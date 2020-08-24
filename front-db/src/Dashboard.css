@@ -1,0 +1,17 @@
+.flex {
+    display: flex;
+}
+.space-between {
+    justify-content: space-between;
+}
+.container {
+    background: white;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.select {
+    margin: 15px;
+}
+.form-group {
+    margin-right: 20px;
+}
