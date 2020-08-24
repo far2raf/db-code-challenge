@@ -1,4 +1,5 @@
 from flask import Flask, render_template, Response, request, jsonify, make_response
+from flask_sqlalchemy import SQLAlchemy
 from flask_sse import sse
 from flask_cors import CORS
 import requests
@@ -16,85 +17,64 @@ app = Flask(__name__)
 app.secret_key = b'\x97\x19\xc4\x7f]9\xfc\xe8\xdb^\xc0qO \xdf\xb8'
 login_manager.init_app(app)
 
-# TODO, create local database
-# db = SQLAlchemy(app)
-# class User(UserMixin, db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.String(256), primary_key=True)
-
 
 class User(UserMixin):
+    dict_of_users = {}
 
-    def __init__(self, username):
-        self.username = username
-
-    def get_username(self):
-        return self.username
+    def __init__(self, user_id):
+        assert User.contains_id(user_id) is False, f"User id: {user_id} already exist"
+        self.id = id
+        User.dict_of_users[id] = self
 
     @staticmethod
     def contains_id(user_id):
-        global mock_id
-        if user_id == mock_id:
-            return True
-        else:
-            return False
+        return user_id in User.dict_of_users
 
     @staticmethod
     def get_user_by_id(user_id):
-        global mock_id
-        if user_id == mock_id:
-            return User.get_mock_user()
+        if user_id in User.dict_of_users:
+            return User.dict_of_users[id]
         else:
             raise RuntimeError(f"there isn't the id: {user_id}")
 
     @staticmethod
-    def get_mock_user():
-        global mock_user
-        return mock_user
-
-    @staticmethod
-    def contains_username(username):
-        global mock_username
-        if username == mock_username:
-            return True
-        else:
-            return False
-
-    @staticmethod
-    def get_user_by_username(username):
-        global mock_username
-        if username == mock_username:
-            return User.get_mock_user()
-        else:
-            raise RuntimeError(f"User {mock_username} does not exist")
-
-    def get_id(self):
-        global mock_id
-        return mock_id
-
-
-# TODO, remove it
-mock_username = 'Anton'
-mock_password = "12345"
-mock_id = "1"
-mock_user = User(mock_username)
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    if User.contains_id(user_id):
-        return User.get_user_by_id(user_id)
-    else:
-        return None
+    def remove_user(user_id):
+        del User.dict_of_users[user_id]
 
 
 def verify_existence_of_user(username, password):
     resp = requests.post(f"{WEB_HOST_DATA_GENERATOR}/verify-existence-of-user",
                          data={"username": username, "password": password})
     if resp.status_code == 200:
-        return {"status_server_response": 200, "user_exist": resp.json()['exist']}
+        resp_json = resp.json()
+        if resp_json['user_exist']:
+            return {"status_server_response": 200,
+                    "user_exist": resp_json['user_exist'],
+                    "user_id": resp_json["user_id"]}
+        else:
+            return {"status_server_response": 200,
+                    "user_exist": False}
     else:
         return {"status_server_response": resp.status_code, "response": resp}
+
+
+def verify_user_id(user_id):
+    resp = requests.post(f"{WEB_HOST_DATA_GENERATOR}/verify-user-id")
+    if resp.status_code == 200:
+        return {"status_server_response": 200, "user_exist": resp.json()['user_exist']}
+    else:
+        return {"status_server_response": resp.status_code, "response": resp}
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    result_of_verifying = verify_user_id(user_id)
+    if result_of_verifying['status_server_response'] == 200 and\
+            result_of_verifying['user_exist'] and User.contains_id(user_id):
+        return User.get_user_by_id(user_id)
+    else:
+        User.remove_user(user_id)
+        return None
 
 
 @app.route('/log-in', methods=['POST'])
@@ -105,8 +85,11 @@ def log_in():
     if result_of_verifying['status_server_response'] != 200:
         # TODO. send some information about a response of data-generate server for debug
         return make_response(({"success": False}, 500))
-    exist = result_of_verifying['user_exist']
-    if exist:
+    user_exist = result_of_verifying['user_exist']
+    if user_exist:
+        user_id = result_of_verifying['user_id']
+        user = User(user_id)
+        login_user(user)
         return make_response(({"success": True}, 200))
     else:
         return make_response({"success": False,
@@ -115,31 +98,9 @@ def log_in():
 
 @app.route('/log-out')
 def log_out():
+    User.remove_user(current_user.user_id)
     logout_user()
     return make_response(({"success": True}, 200))
-
-
-@app.route('/dev/log-in')
-def dev_log_in():
-    global mock_username, mock_password
-    username = mock_username
-    password = mock_password
-    user = User.get_mock_user()
-    login_user(user)
-    return "You are logged in"
-
-
-@app.route('/dev/log-out')
-@login_required
-def dev_log_out():
-    logout_user()
-    return "You are logged out"
-
-
-@app.route('/dev/get-username')
-@login_required
-def dev_get_username():
-    return f"The current user is {current_user.username}"
 
 
 #app.register_blueprint(sse, url_prefix='/stream')
