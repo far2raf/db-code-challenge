@@ -64,7 +64,9 @@ def verify_existance_of_user_in_db(user_name, password_from_user):
         pwd = cursor.fetchone()
         cursor.close()
         encripted_password_from_user = cliper.encrypt(password_from_user)
-        if pwd == encripted_password_from_user:
+        if pwd is None:
+            return {"user_exist": False}
+        if pwd[0] == encripted_password_from_user:
             return {"user_exist": True, "user_id": user_name}
         else:
             return {"user_exist": False}
