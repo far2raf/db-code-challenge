@@ -6,7 +6,6 @@ import mysql.connector
 from cryptography.fernet import Fernet
 import test
 
-print("ok")
 HOST = 'localhost'
 DB = 'db_grad_cs_1917'
 USER = 'root'
@@ -86,7 +85,6 @@ def verify_existence_of_user_in_db(user_name, password_from_user):
         pwd = cursor.fetchone()
         cursor.close()
 
-       # print(encripted_password_from_user, "  ", pwd[0])
         if pwd is None:
             return {"user_exist": False}
         if decripted_pass(pwd[0]) == password_from_user:
@@ -116,7 +114,6 @@ def verify_user_id_in_db(user_name):
         print("Error during connection to db".format(error))
         cursor.close()
         return False
-
 
 
 if __name__ == "__main__":
