@@ -142,3 +142,4 @@ def downloadDealDB(datBegin, datEnd):
 
 
 
+add_new_user("katya", '8989')
