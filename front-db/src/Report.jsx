@@ -29,14 +29,14 @@ const Report = (props) => {
                     <div className='flex'>
                         <div className='form-group'>
                             <label for='selectInstrument'>Select instrument</label>
-                            <select class='form-control' id='selectInstrument'>
+                            <select className='form-control' id='selectInstrument'>
                                 <option>Galactia</option>
                                 <option>Eclipse</option>
                             </select>
                         </div>
                         <div className='form-group'>
                             <label for='selectInstrument'>Select counterparty</label>
-                            <select class='form-control' id='selectInstrument'>
+                            <select className='form-control' id='selectInstrument'>
                                 <option>Lewis</option>
                                 <option>John</option>
                             </select>
