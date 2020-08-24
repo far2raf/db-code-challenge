@@ -1,7 +1,7 @@
 import React from 'react';
 import DatetimeRangePicker from 'react-datetime-range-picker';
 import { Bar } from 'react-chartjs-2';
-import './Dashboard.css';
+import './../Dashboard/Dashboard.css';
 
 
 const BarChart = (props) => {

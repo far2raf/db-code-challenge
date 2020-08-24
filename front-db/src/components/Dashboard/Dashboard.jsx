@@ -1,9 +1,9 @@
 import React from 'react';
-import Report from './Report';
-import Header from './Header/Header';
+import Report from './../Report/Report';
+import Header from './../Header/Header';
 
 import {Bar} from 'react-chartjs-2';
-import BarChart from './BarChart';
+import BarChart from './../Chart/BarChart';
 
 const sampleData = [
     { "instrument": "Galactia", "buy": 4444, "sell": 4200 },
@@ -14,9 +14,6 @@ const sampleData = [
 ];
 
 const Dashboard = () => {
-    if (!localStorage.getItem('token')) {
-        window.location.href = '/';
-    }
     return (
         <div>
             <Header />
