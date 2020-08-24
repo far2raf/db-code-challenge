@@ -3,7 +3,7 @@ import SignUp from './SignUp';
 import Login from './Login';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-import './../App.css';
+import './../../App.css';
 
 
 const Auth = () => {

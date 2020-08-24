@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import DatetimeRangePicker from 'react-datetime-range-picker';
-import './Dashboard.css'
-import DataTable from './DataTable';
+import './../Dashboard/Dashboard.css'
+import DataTable from './../Table/DataTable';
 
 const Report = (props) => {
     const dateChanged = () => {

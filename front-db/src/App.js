@@ -1,11 +1,11 @@
 import React from 'react';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 
 
-import Dashboard from './Dashboard';
-import Auth from './auth/Auth';
+import Dashboard from './components/Dashboard/Dashboard';
+import Auth from './components/auth/Auth';
 
 
 function App() {
@@ -21,7 +21,12 @@ function App() {
 
   if (checkAuth()) {
     return (
-      <Dashboard />
+      <Router>
+      <Switch>
+        <Route exact path='/' component={Dashboard} />
+        <Route path="/dashboard" component={Dashboard} />
+      </Switch>
+    </Router>
     );
   }
 
@@ -31,7 +36,7 @@ function App() {
         <Route exact path='/' component={Auth} />
         <Route path="/sign-in" component={Auth} />
         <Route path="/sign-up" component={Auth} />
-        <Route path="/dashboard" component={Dashboard}></Route>
+        <Redirect from="*" to="/" />
       </Switch>
     </Router>
   )
