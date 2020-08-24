@@ -2,12 +2,23 @@ import mysql.connector
 from RandomDealData import RandomDealData
 import json
 from Instrument import Instrument
+from cryptography.fernet import Fernet
 
 HOST = 'localhost'
 DB = 'db_grad_cs_1917'
 USER = 'user'
 PSW = 'password'
 
+pass_key = Fernet.generate_key()
+cliper = Fernet(pass_key)
+
+def encript_pass(user_password):
+    encripted_psd = cliper.encrypt(user_password)
+    return encripted_psd
+
+def decripted_pass(encripted_password):
+    decripted_psd = cliper.decrypt(encripted_password)
+    return decripted_psd
 
 def add_new_user(user_name, password):
     cursor = None
