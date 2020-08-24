@@ -9,6 +9,22 @@ import Auth from './auth/Auth';
 
 
 function App() {
+
+  const checkAuth = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      return true;
+    }
+
+    return false;
+  }
+
+  if (checkAuth()) {
+    return (
+      <Dashboard />
+    );
+  }
+
   return (
     <Router>
       <Switch>
@@ -17,9 +33,8 @@ function App() {
         <Route path="/sign-up" component={Auth} />
         <Route path="/dashboard" component={Dashboard}></Route>
       </Switch>
-
     </Router>
-  );
+  )
 }
 
 export default App;
