@@ -145,7 +145,37 @@ def request_average_buy_sell_per_instrument_from_data_generator_db(instrument, c
         print(error)
         print("Error during connection to db".format(error))
         cursor.close()
+        return {'data': []}
 
+def request_historical_data_from_data_generator_db(instrument, counterparty, datBegin, datEnd):
+    cursor = None
+    try:
+        where = ""
+        if instrument != 'all':
+            where = """ instrument_name = '%(ins)s' and """ % {"ins": instrument}
+            print(where)
+        if counterparty != 'all':
+            where = where + """ counterparty_name = '%(cpt)s' and """ % {"cpt": counterparty}
+            print(where)
+        connection = mysql.connector.connect(host=HOST, database=DB, user=USER, password=PSW)
+        cursor = connection.cursor()
+        get_data = """Select instrument_name, counterparty_name, deal_amount, deal_type, deal_time from deal d
+		                    inner join counterparty c on d.deal_counterparty_id = c.counterparty_id
+                            inner join instrument i on i.instrument_id = d.deal_instrument_id
+                     where """ + where + """ '%(strDate)s' <= deal_time and '%(endDate)s' >= deal_time """ % {"strDate": datBegin, "endDate": datEnd}
+        cursor.execute(get_data)
+        data = cursor.fetchall()
+        di = []
+        for i in data:
+            di.append({'instrument': i[0], 'counterparty':i[1], 'price': i[2], 'type': i[3],'time':i[4]})
+        cursor.close()
+        #print({'data': di})
+        return {'data': di}
+    except mysql.connector.Error as error:
+        print(error)
+        print("Error during connection to db".format(error))
+        cursor.close()
+        return {'data': []}
 
 if __name__ == "__main__":
     bootapp()
