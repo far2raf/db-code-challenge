@@ -4,7 +4,7 @@ import webServiceStream
 from RandomDealData import *
 import mysql.connector
 from cryptography.fernet import Fernet
-
+import test
 
 HOST = 'localhost'
 DB = 'db_grad_cs_1917'
@@ -15,11 +15,11 @@ pass_key = "0ArBlCVPGT5XaXZMNwks3d_S0Or2dpm9o69y1nz0mdk="
 cliper = Fernet(pass_key)
 
 def encript_pass(user_password):
-    encripted_psd = cliper.encrypt(user_password)
+    encripted_psd = str(cliper.encrypt(user_password.encode('utf-8')), 'utf-8')
     return encripted_psd
 
 def decripted_pass(encripted_password):
-    decripted_psd = cliper.decrypt(encripted_password)
+    decripted_psd = str(cliper.decrypt(encripted_password.encode('utf-8')), 'utf-8')
     return decripted_psd
 
 
@@ -84,11 +84,10 @@ def verify_existence_of_user_in_db(user_name, password_from_user):
         cursor.execute(get_pwd)
         pwd = cursor.fetchone()
         cursor.close()
-        # encripted_password_from_user = cliper.encrypt(password_from_user)
+
         if pwd is None:
             return {"user_exist": False}
-        # if pwd[0] == encripted_password_from_user:
-        if pwd[0] == password_from_user:
+        if decripted_pass(pwd[0]) == password_from_user:
             return {"user_exist": True, "user_id": user_name}
         else:
             return {"user_exist": False}
@@ -119,3 +118,6 @@ def verify_user_id_in_db(user_name):
 
 if __name__ == "__main__":
     bootapp()
+
+
+
