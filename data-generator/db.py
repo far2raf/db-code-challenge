@@ -98,7 +98,8 @@ def add_new_data_in_db(instrument_name, cpty, price, types, quantity, time):
         connection.commit()
         cursor.close()
     except mysql.connector.Error as error:
-        print("Failed to insert record into users table".format(error))
+        print("Failed to insert record into users table")
+        print(error)
         cursor.close()
         return False
     return True
