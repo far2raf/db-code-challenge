@@ -116,7 +116,7 @@ def loadDealDatainDB():
     quantity = dealData["quantity"]
     time = dealData["time"]
 
-def downloadDealDB(datBegin, datEnd):
+def get_deal(datBegin, datEnd):
     cursor = None
     try:
         connection = mysql.connector.connect(host=HOST, database=DB, user=USER, password=PSW)
@@ -124,13 +124,14 @@ def downloadDealDB(datBegin, datEnd):
         get_pwd = """Select instrument_name, deal_type, avg(deal_amount) from deal d
 		                    inner join counterparty c on d.deal_counterparty_id = c.counterparty_id
                             inner join instrument i on i.instrument_id = d.deal_instrument_id
-                     where strDate <= deal_time and endDate >= dealDate
-                     group by instrument_name, deal_type;"""
+                     where '%(strDate)s' <= deal_time and '%(endDate)s' >= dealDate
+                     group by instrument_name, deal_type"""
         cursor.execute(get_pwd)
         data = cursor.fetchall()
+        print(data)
         cursor.close()
     except mysql.connector.Error as error:
         print("Error during connection to db".format(error))
         cursor.close()
-        return
-    return
+
+print(get_deal(1,1))
