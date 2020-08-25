@@ -33,10 +33,10 @@ const Report = (props) => {
     const [cpty, setCpty] = useState('All');
     const [dateRange, setdateRange] = useState({});
     const filter = props.filter;
-    const instruments = Array.from(new Set(sampleData.map(item => 
-        item.instrumentName)));
-    const counterparties = Array.from(new Set(sampleData.map(item =>
-        item.cpty)));
+    const [instruments, setInstruments] = useState(Array.from(new Set(sampleData.map(item => 
+        item.instrumentName))));
+    const [counterparties, setCounterparties] = useState(Array.from(new Set(sampleData.map(item =>
+        item.cpty))));
     const changeFilter = (event, instrument, cpty, dateRange) => {
         event.preventDefault();
         console.log(instrument, cpty, dateRange);
@@ -45,6 +45,7 @@ const Report = (props) => {
         setdateRange(dateRange);
     };
     useEffect(() => {
+        //add getting data for date range
         let dataFilter = data.filter(item => (instrument == 'All' || 
             item.instrumentName == instrument) && (cpty == 'All' || item.cpty == cpty));
         setFilteredData(dataFilter);
@@ -57,7 +58,6 @@ const Report = (props) => {
             </div>
             {filter &&
                 <Filter clickHandler = {changeFilter} instruments={instruments} counterparties={counterparties} />}
-
             <DataTable data={filteredData}/>   
         </div>
     );
