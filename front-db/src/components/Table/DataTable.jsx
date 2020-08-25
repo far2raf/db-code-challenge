@@ -16,7 +16,7 @@ const DataTable = (props) => {
                 </tr>
             </thead>
             <tbody>
-                {data.map(item => <DataRow key={item[0]} data = {item}/>)}
+                {data.map((item, index) => <DataRow key={index} data = {item}/>)}
             </tbody>
         </table>
     );
