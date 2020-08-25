@@ -3,9 +3,13 @@ import DatetimeRangePicker from 'react-datetime-range-picker';
 import '../Dashboard/Dashboard.css';
 
 const Filter = (props) => {
+    const [dateRange, setDateRange] = useState({});
     const instruments = props.instruments;
     const counterparties = props.counterparties;
     const clickHandler = props.clickHandler;
+    const changeDates = (dateRange) => {
+        setDateRange(dateRange);
+    };
     return (
         <div className='filter'>
                 <form>
@@ -27,13 +31,13 @@ const Filter = (props) => {
                             </select>
                         </div>
                         <div className='date'>
-                            <DatetimeRangePicker />
+                            <DatetimeRangePicker onChange={changeDates} />
                         </div> 
                     </div>
                     <button onClick={event => {  
                         let selectedInstrument = document.getElementById('selectInstrument').value;
                         let selectedCpty = document.getElementById('selectcpty').value;
-                        clickHandler(event, selectedInstrument, selectedCpty)}} 
+                        clickHandler(event, selectedInstrument, selectedCpty, dateRange);}} 
                     className="btn btn-primary">Filter</button>  
                 </form>
             </div>

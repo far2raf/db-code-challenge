@@ -4,48 +4,61 @@ import './../Dashboard/Dashboard.css'
 import DataTable from './../Table/DataTable';
 import Filter from './Filter';
 
-const Report = (props) => {
-    let sampleData = [{
-            "instrumentName": "Galactia", 
-            "cpty": "Lewis", 
-            "price": 9964.235074757127, 
-            "type": "S", 
-            "quantity": 71, 
-            "time": "11-Aug-2019 (12:07:06.471252)"},
-        {
-            "instrumentName": "Galactia", 
-            "cpty": "John", 
-            "price": 9964.235074757127, 
-            "type": "S", 
-            "quantity": 71, 
-            "time": "11-Aug-2019 (12:07:06.471252)"},
-        {
-            "instrumentName": "Eclipse", 
-            "cpty": "Lewis", 
-            "price": 9964.235074757127, 
-            "type": "S", 
-            "quantity": 71, 
-            "time": "11-Aug-2019 (12:07:06.471252)"}];
+let sampleData = [{
+    "instrumentName": "Galactia", 
+    "cpty": "Lewis", 
+    "price": 9964.235074757127, 
+    "type": "S", 
+    "quantity": 71, 
+    "time": "11-Aug-2019 (12:07:06.471252)"},
+{
+    "instrumentName": "Galactia", 
+    "cpty": "John", 
+    "price": 9964.235074757127, 
+    "type": "S", 
+    "quantity": 71, 
+    "time": "11-Aug-2019 (12:07:06.471252)"},
+{
+    "instrumentName": "Eclipse", 
+    "cpty": "Lewis", 
+    "price": 9964.235074757127, 
+    "type": "S", 
+    "quantity": 71, 
+    "time": "11-Aug-2019 (12:07:06.471252)"}];
 
-    const filterData = (event, instrument, cpty) => {
-        event.preventDefault();
-        console.log('filter');
-        console.log(instrument, cpty);
-    };
-    
+const Report = (props) => {
+    const [data, setData] = useState(sampleData);
+    const [filteredData, setFilteredData] = useState(sampleData);
+    const [instrument, setInstrument] = useState('All');
+    const [cpty, setCpty] = useState('All');
+    const [dateRange, setdateRange] = useState({});
     const filter = props.filter;
     const instruments = Array.from(new Set(sampleData.map(item => 
         item.instrumentName)));
     const counterparties = Array.from(new Set(sampleData.map(item =>
         item.cpty)));
+    const changeFilter = (event, instrument, cpty, dateRange) => {
+        event.preventDefault();
+        console.log(instrument, cpty, dateRange);
+        setInstrument(instrument);
+        setCpty(cpty);
+        setdateRange(dateRange);
+    };
+    useEffect(() => {
+        let dataFilter = data.filter(item => (instrument == 'All' || 
+            item.instrumentName == instrument) && (cpty == 'All' || item.cpty == cpty));
+        setFilteredData(dataFilter);
+    }, [instrument, cpty, dateRange]);
+    
     return (
         <div className='container'>
             <div className='card-header flex space-between'>
                 <h3>{props.title}</h3>   
             </div>
             {filter &&
-                <Filter clickHandler={filterData} instruments={instruments} counterparties={counterparties} />}
-            <DataTable data={sampleData}/>   
+                <Filter clickHandler = {changeFilter} instruments={instruments} counterparties={counterparties} />}
+
+            <DataTable data={filteredData}/>   
         </div>
     );
 };
