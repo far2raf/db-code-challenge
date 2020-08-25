@@ -9,21 +9,16 @@ DB = 'db_grad_cs_1917'
 USER = 'root'
 PSW = 'password'
 
-
-
 pass_key = "0ArBlCVPGT5XaXZMNwks3d_S0Or2dpm9o69y1nz0mdk="
 cliper = Fernet(pass_key)
 
 def encript_pass(user_password):
-
     encripted_psd = str(cliper.encrypt(user_password.encode('utf-8')), 'utf-8')
     return encripted_psd
-
 
 def decripted_pass(encripted_password):
     decripted_psd = cliper.decrypt(encripted_password.encode('utf-8'), 'utf-8')
     return  decripted_psd
-
 
 def add_new_user(user_name, password):
     cursor = None
@@ -87,6 +82,11 @@ def add_new_data_in_db(instrument_name, cpty, price, types, quantity, time):
             sql = """Insert into instrument(instrument_id, instrument_name) values ('%(id)d','%(in_name)s') """ % {"id": id_inst, "in_name": instrument_name}
             cursor.execute(sql)
             connection.commit()
+
+
+
+
+
         cursor.close()
     except mysql.connector.Error as error:
         print("Failed to insert record into users table".format(error))
@@ -122,7 +122,7 @@ def loadDealDatainDB():
     quantity = dealData["quantity"]
     time = dealData["time"]
 
-def downloadDealDB(datBegin, datEnd):
+def get_deal(datBegin, datEnd):
     cursor = None
     try:
         connection = mysql.connector.connect(host=HOST, database=DB, user=USER, password=PSW)
@@ -130,10 +130,11 @@ def downloadDealDB(datBegin, datEnd):
         get_pwd = """Select instrument_name, deal_type, avg(deal_amount) from deal d
 		                    inner join counterparty c on d.deal_counterparty_id = c.counterparty_id
                             inner join instrument i on i.instrument_id = d.deal_instrument_id
-                     where strDate <= deal_time and endDate >= dealDate
-                     group by instrument_name, deal_type;"""
+                     where '%(strDate)s' <= deal_time and '%(endDate)s' >= dealDate
+                     group by instrument_name, deal_type"""
         cursor.execute(get_pwd)
         data = cursor.fetchall()
+        print(data)
         cursor.close()
     except mysql.connector.Error as error:
         print("Error during connection to db".format(error))

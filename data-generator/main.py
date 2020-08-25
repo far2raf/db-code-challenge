@@ -1,4 +1,4 @@
-from flask import Flask, Response, request, make_response
+from flask import Flask, Response
 from flask_cors import CORS
 import webServiceStream
 from RandomDealData import *
@@ -84,7 +84,6 @@ def verify_existence_of_user_in_db(user_name, password_from_user):
         cursor.execute(get_pwd)
         pwd = cursor.fetchone()
         cursor.close()
-
         if pwd is None:
             return {"user_exist": False}
         if decripted_pass(pwd[0]) == password_from_user:
@@ -116,8 +115,38 @@ def verify_user_id_in_db(user_name):
         return False
 
 
+def request_average_buy_sell_per_instrument_from_data_generator_db(instrument, counterparty, datBegin, datEnd):
+    cursor = None
+    try:
+        where = ""
+        if instrument != 'all':
+            where = """ instrument_name = '%(ins)s' and """ % {"ins": instrument}
+        if counterparty != 'all':
+            where = where + """ counterparty_name = '%(cpt)s' and """ % {"cpt": counterparty}
+        connection = mysql.connector.connect(host=HOST, database=DB, user=USER, password=PSW)
+        cursor = connection.cursor()
+        get_data = """Select instrument_name, deal_type, avg(deal_amount) from deal d 
+		                    inner join counterparty c on d.deal_counterparty_id = c.counterparty_id 
+                            inner join instrument i on i.instrument_id = d.deal_instrument_id 
+                     where """ + where + """ '%(strDate)s' <= deal_time and '%(endDate)s' >= deal_time 
+                group by instrument_name, deal_type""" % {"strDate": datBegin, "endDate": datEnd}
+        cursor.execute(get_data)
+        data = cursor.fetchall()
+        dictn = {}
+        for i in data:
+            if dictn.get(i[0]) is None:
+                dictn[i[0]] = {'instrument': i[0]}
+            dictn[i[0]][i[1]] = i[2]
+        listDict = list(dictn.values())
+        cursor.close()
+        # print({'data': listDict})
+        return {'data': listDict}
+    except mysql.connector.Error as error:
+        print(error)
+        print("Error during connection to db".format(error))
+        cursor.close()
+
+
 if __name__ == "__main__":
     bootapp()
-
-
 
