@@ -17,7 +17,8 @@ const Dashboard = () => {
     return (
         <div>
             <Header />
-            <Report title='Historical data' />
+            <Report title='Streaming data' filter={false}/>
+            <Report title='Historical data' filter={true}/>
             <BarChart data={sampleData} title='Average buy/sell per instrument' />
         </div>
     );
