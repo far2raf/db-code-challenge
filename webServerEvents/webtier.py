@@ -5,6 +5,8 @@ import requests
 import time
 from flask_login import LoginManager, UserMixin, current_user, login_required, logout_user, login_user
 
+import base64
+
 login_manager = LoginManager()
 WEB_HOST_DATA_GENERATOR = "http://localhost:8080"
 app = Flask(__name__)
@@ -15,6 +17,11 @@ app = Flask(__name__)
 # TODO, ask question about it
 app.secret_key = b'\x97\x19\xc4\x7f]9\xfc\xe8\xdb^\xc0qO \xdf\xb8'
 login_manager.init_app(app)
+
+def generate_token(template):
+    template += template[::-1]
+    res = base64.b64encode(template.encode('ascii'))
+    return str(res, "utf-8")
 
 
 class User(UserMixin):
@@ -89,13 +96,17 @@ def log_in():
         user_id = result_of_verifying['user_id']
         user = User(user_id)
         login_user(user)
-        return make_response(({"success": True}, 200))
+        token = generate_token(user_id)
+        return make_response(({"success": True,
+                                "token": token,
+                                "user": user_id}, 200))
     else:
         return make_response({"success": False,
                               "text": "wrong username or password"}, 401)
 
 
 @app.route('/log-out')
+@login_required
 def log_out():
     User.remove_user(current_user.user_id)
     logout_user()
