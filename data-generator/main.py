@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, request, make_response
 from flask_cors import CORS
 import webServiceStream
 from RandomDealData import *
