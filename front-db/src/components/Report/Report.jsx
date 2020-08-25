@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import './../Dashboard/Dashboard.css'
 import DataTable from './../Table/DataTable';
@@ -26,6 +26,12 @@ const Report = (props) => {
             "type": "S", 
             "quantity": 71, 
             "time": "11-Aug-2019 (12:07:06.471252)"}];
+
+    const filterData = (event, instrument, cpty) => {
+        event.preventDefault();
+        console.log('filter');
+        console.log(instrument, cpty);
+    };
     
     const filter = props.filter;
     const instruments = Array.from(new Set(sampleData.map(item => 
@@ -38,7 +44,7 @@ const Report = (props) => {
                 <h3>{props.title}</h3>   
             </div>
             {filter &&
-                <Filter  instruments={instruments} counterparties={counterparties} />}
+                <Filter clickHandler={filterData} instruments={instruments} counterparties={counterparties} />}
             <DataTable data={sampleData}/>   
         </div>
     );
