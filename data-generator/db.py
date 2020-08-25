@@ -65,7 +65,8 @@ def add_new_data_in_db(instrument_name, cpty, price, types, quantity, time):
             sql = """Insert into counterparty(counterparty_id, counterparty_name, counterparty_status, counterparty_date_registrated ) values ('%(id)d','%(cpty)s', 'A', sysdate) """ % {"id": id_cpty, "cpty": cpty}
             cursor.execute(sql)
             connection.commit()
-
+        else:
+            id_cpty = counterparty_id[0]
 
 
         sql = """SELECT instrument_id from instrument where instrument_name = '%(in_name)s' """ % {"in_name": instrument_name }
@@ -82,14 +83,23 @@ def add_new_data_in_db(instrument_name, cpty, price, types, quantity, time):
             sql = """Insert into instrument(instrument_id, instrument_name) values ('%(id)d','%(in_name)s') """ % {"id": id_inst, "in_name": instrument_name}
             cursor.execute(sql)
             connection.commit()
-
-
-
-
-
+        else:
+            id_inst = instrument_id[0]
+        sql = """SELECT max(deal_id) FROM deal """
+        cursor.execute(sql)
+        deal_id = cursor.fetchone()
+        if deal_id[0] is None:
+            id_deal = 1
+        else:
+            id_deal = deal_id[0] + 1
+        sql = """Insert into deal (deal_id, deal_time, deal_counterparty_id, deal_instrument_id, deal_type, deal_amount, deal_quantity) values ('%(di)d','%(dt)s', '%(dci)d','%(dii)d', '%(dty)s','%(da)d', '%(dq)d') """ % {
+            "di": id_deal, "dt": time, "dci": id_cpty, "dii": id_inst, "dty": types, "da": price, "dq": quantity}
+        cursor.execute(sql)
+        connection.commit()
         cursor.close()
     except mysql.connector.Error as error:
-        print("Failed to insert record into users table".format(error))
+        print("Failed to insert record into users table")
+        print(error)
         cursor.close()
         return False
     return True
@@ -142,6 +152,9 @@ def get_deal(datBegin, datEnd):
         return
     return
 
+#data:{"instrumentName": "Galactia", "cpty": "Lewis", "price": 9964.235074757127, "type": "S", "quantity": 71, "time": "11-Aug-2019 (12:07:06.471252)"}
 
 
-add_new_user("katya", '8989')
+add_new_data_in_db("Galactia", "Lewis", 9964.235074757127, "S", 71, "11-Aug-2019 (12:07:06.471252)")
+
+#add_new_user("katya", '8989')
