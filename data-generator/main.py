@@ -150,4 +150,3 @@ def request_average_buy_sell_per_instrument_from_data_generator_db(instrument, c
 if __name__ == "__main__":
     bootapp()
 
-print(verify_existance_of_user_in_db('debs', 'gradprog2016@02'))
