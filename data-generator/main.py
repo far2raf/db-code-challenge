@@ -84,7 +84,6 @@ def verify_existence_of_user_in_db(user_name, password_from_user):
         cursor.execute(get_pwd)
         pwd = cursor.fetchone()
         cursor.close()
-
         if pwd is None:
             return {"user_exist": False}
         if decripted_pass(pwd[0]) == password_from_user:
@@ -150,3 +149,5 @@ def request_average_buy_sell_per_instrument_from_data_generator_db(instrument, c
 
 if __name__ == "__main__":
     bootapp()
+
+print(verify_existance_of_user_in_db('debs', 'gradprog2016@02'))
