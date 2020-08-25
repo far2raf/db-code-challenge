@@ -6,19 +6,19 @@ from cryptography.fernet import Fernet
 
 HOST = 'localhost'
 DB = 'db_grad_cs_1917'
-USER = 'user'
+USER = 'root'
 PSW = 'password'
 
 pass_key = "0ArBlCVPGT5XaXZMNwks3d_S0Or2dpm9o69y1nz0mdk="
 cliper = Fernet(pass_key)
 
 def encript_pass(user_password):
-    encripted_psd = cliper.encrypt(user_password)
+    encripted_psd = str(cliper.encrypt(user_password.encode('utf-8')), 'utf-8')
     return encripted_psd
 
 def decripted_pass(encripted_password):
-    decripted_psd = cliper.decrypt(encripted_password)
-    return decripted_psd
+    decripted_psd = cliper.decrypt(encripted_password.encode('utf-8'), 'utf-8')
+    return  decripted_psd
 
 def add_new_user(user_name, password):
     cursor = None
@@ -26,6 +26,12 @@ def add_new_user(user_name, password):
         connection = mysql.connector.connect(host=HOST, database=DB, user=USER, password=PSW)
         cursor = connection.cursor()
         new_user = "INSERT INTO users  (user_id, user_pwd) VALUES (%s , %s)"
+
+        pas = encript_pass(password)
+        print(pas)
+        values = (user_name, pas)
+
+        password = encript_pass(password)
         values = (user_name, password)
         cursor.execute(new_user, values)
         connection.commit()
@@ -133,5 +139,9 @@ def get_deal(datBegin, datEnd):
     except mysql.connector.Error as error:
         print("Error during connection to db".format(error))
         cursor.close()
+        return
+    return
 
-print(get_deal(1,1))
+
+
+add_new_user("katya", '8989')
