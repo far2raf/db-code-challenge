@@ -72,6 +72,28 @@ def verify_user_id(user_id):
         return {"status_server_response": resp.status_code, "response": resp}
 
 
+def request_historical_data_from_data_generator(date_begin, date_end):
+    resp = requests.post(f"{WEB_HOST_DATA_GENERATOR}/historical-data", data={"date_begin" : date_begin, "date_end" : date_end})
+
+    if resp.status_code == 200:
+        return {"status_server_response": 200, "response": resp}
+    else:
+        return {"status_server_response": resp.status_code, "response": resp}
+def request_average_buy_sell_per_instrument_from_data_generator(instrument, counterparty, date_begin, date_end):
+    resp = requests.post(f"{WEB_HOST_DATA_GENERATOR}/average-buy-sell-per-instrument",
+                         data={"instrument" : instrument, "counterparty" : counterparty,
+                               "date_begin" : date_begin, "date_end" : date_end})
+
+    print(resp.json())
+    if resp.status_code == 200:
+        return {"status_server_response": 200, "response" : resp.json()}
+    else:
+        return {"status_server_response": resp.status_code, "response" : resp.json()}
+
+
+
+
+
 @login_manager.user_loader
 def load_user(user_id):
     result_of_verifying = verify_user_id(user_id)
@@ -111,6 +133,33 @@ def log_out():
     User.remove_user(current_user.user_id)
     logout_user()
     return make_response(({"success": True}, 200))
+
+
+
+@app.route('/historical-data', methods = ['POST'])
+def historical_data():
+
+    date_begin = request.form['date_begin']
+    date_end = request.form['date_end']
+
+    result_of_request = request_historical_data_from_data_generator(date_begin, date_end)
+
+    if(result_of_request['status_server_response' != 200]):
+        make_response(({"success": False}, 500))
+
+    return make_response(result_of_request)
+
+@app.route('/average-buy-sell-per-instrument', methods = ['POST'])
+def average_buy_sell_per_instrument():
+    instrument = request.form['instrument']
+    counterparty = request.form['counterparty']
+    date_begin = request.form['date_begin']
+    date_end = request.form['date_end']
+
+
+    result_of_request = request_average_buy_sell_per_instrument_from_data_generator(instrument, counterparty, date_begin, date_end)
+
+    return make_response(result_of_request['response'])
 
 
 #app.register_blueprint(sse, url_prefix='/stream')

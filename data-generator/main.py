@@ -62,6 +62,18 @@ def verify_existence_of_user():
     else:
         return make_response(({"success": True, "user_exist": False}, 200))
 
+@app.route('/average-buy-sell-per-instrument', methods=['POST'])
+def average_buy_sell_per_instrument():
+    instrument = request.form['instrument']
+    counterparty = request.form['counterparty']
+    date_begin = request.form['date_begin']
+    date_end = request.form['date_end']
+
+    result_of_request = request_average_buy_sell_per_instrument_from_data_generator_db(instrument, counterparty, date_begin, date_end)
+
+
+    return make_response(result_of_request)
+
 
 @app.route('/verify-user-id', methods=['POST'])
 def verify_user_id():
