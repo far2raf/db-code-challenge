@@ -3,12 +3,8 @@ import './Header.css';
 
 const Header = () => {
     let checkConnection = true;
-    const getUsername = () => {
-        return localStorage.getItem('user')
-    };
-
     const logout = () => {
-        localStorage.clear();
+        localStorage.removeItem('token');
         window.location.href = '/';
     };
 
@@ -32,7 +28,7 @@ const Header = () => {
         <div className="header">
             { checkConnectToDB() }
             <div className="username">
-                { getUsername() }
+                Username
             </div>
             <button className="logout" onClick={logout}>
                 Logout
