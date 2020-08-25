@@ -2,6 +2,7 @@ from flask import Flask, Response
 from flask_cors import CORS
 import webServiceStream
 from RandomDealData import *
+from flask import request, make_response
 import mysql.connector
 from cryptography.fernet import Fernet
 import test
