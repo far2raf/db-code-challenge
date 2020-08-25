@@ -6,7 +6,7 @@ if __name__ == "__main__":
     print(r.text, r.status_code)
 
     r = requests.post("http://127.0.0.1:8090/log-in",
-        data={"username": "katya", "password":
-            "8989"})
+        data={"username": "ivan", "password":
+            "6789"})
 
     print(r.text, r.status_code)

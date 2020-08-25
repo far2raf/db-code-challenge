@@ -22,6 +22,7 @@ def encript_pass(user_password):
 
 def decripted_pass(encripted_password):
     decripted_psd = cliper.decrypt(encripted_password.encode('utf-8'), 'utf-8')
+    return  decripted_psd
 
 
 def add_new_user(user_name, password):
