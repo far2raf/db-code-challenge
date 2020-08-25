@@ -9,9 +9,15 @@
     margin-top: 20px;
     margin-bottom: 20px;
 }
-.select {
+.filter {
     margin: 15px;
 }
 .form-group {
     margin-right: 20px;
+}
+.date {
+    margin-left: auto;
+}
+select.form-control {
+    max-height: 90px;
 }
