@@ -49,6 +49,7 @@ const SignUp = () => {
         }
 
         localStorage.setItem('token', '12345');
+        localStorage.setItem('user', username);
         window.location.href = '/dashboard';
     }
 
